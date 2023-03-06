@@ -1,61 +1,54 @@
-import React, {useState} from 'react';
-export const AuthContext = React.createContext(null);
-
-const initialState = {
-  isLoggedIn: false,
-  isLoginPending: false,
-  loginError: null
-}
-
-export const ContextProvider = props => {
-  const [state, setState] = useState(initialState);
-
-  const setLoginPending = (isLoginPending) => setState({isLoginPending});
-  const setLoginSuccess = (isLoggedIn) => setState({isLoggedIn});
-  const setLoginError = (loginError) => setState({loginError});
-
-  const login = (email, password) => {
-    setLoginPending(true);
-    setLoginSuccess(false);
-    setLoginError(null);
-
-    fetchLogin( email, password, error => {
-      setLoginPending(false);
-
-      if (!error) {
-        setLoginSuccess(true);
-      } else {
-        setLoginError(error);
+import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+const AuthContext = createContext();
+function AuthProvider(props) {
+  const [user, setUser] = useState({username:'', id:'', role:"", isLogged:false});
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        await AuthenticateToken();
+      } catch (error) {
+       throw new Error(error)
       }
-    })
-  }
+    };
+    fetchUser();
+  }, []);
+  
+  const AuthenticateToken = async () => {
+    const token = await localStorage.getItem('accessToken');
+    if (token) {
+      try {
+        // Verify the access token
+        const result = await axios.get('http://localhost:3001/users/auth', {
+          headers: { accessToken: token }
+        });
+        setUser({ username: result.data.name, id: result.data.id, isLogged: true });
+        return user;
+      } catch (error) {
+        setUser({ ...user, isLogged: false });
+        localStorage.removeItem('accessToken');
+        throw new Error(error);
+      }
+    } else {
+      throw new Error("No access token ");
+    }
+  };
+  
+  const handleLogout = () => {
+    setUser({ username: '', id: '', role: '', isLogged: false });
+    localStorage.removeItem('accessToken');
+      setUser({username:"",id:"",role:"", isLogged:false})
+      navigate('/login');
+  };
 
-  const logout = () => {
-    setLoginPending(false);
-    setLoginSuccess(false);
-    setLoginError(null);
-  }
-
+ 
   return (
-    <AuthContext.Provider
-      value={{
-        state,
-        login,
-        logout,
-      }}
-    >
-      {props.children}
+    <AuthContext.Provider value={{user, setUser, handleLogout}}>
+         {props.children}
     </AuthContext.Provider>
   );
-};
+}
 
-// fake login
-const fetchLogin = (email, password, callback) => 
-  setTimeout(() => {
-    if (email === 'admin' && password === 'admin') {
-        
-      return callback(localStorage.setItem("admin", "admin"));
-    } else {
-      return callback(new Error('Invalid email and password'));
-    }
-  }, 1000);
+export { AuthContext, AuthProvider };

@@ -1,16 +1,15 @@
 const {verify}= require('jsonwebtoken')
 const {sign}= require('jsonwebtoken')
-const bcrypt= require('bcrypt')
-class AuthMiddleware{
 
-    static validToken(req,res, next){
-        const accessToken= req.header("token");
+class AuthMiddleware{
+    static validateToken(req,res, next){
+        const accessToken= req.header("accessToken");
         if(!accessToken){
-            return res.send({error:"No authorization header! Please login"});
+            return res.status(400).json({error:"No authorization header! Please login"});
         }else{
             verify(accessToken, process.env.SECRET_KEY_API_KEY,(err)=>{
             if(err){
-                res.json({isLoggin:false,message:"User authentication failed"});
+                res.status(400).json({error:"User authentication failed"});
             }else{
                 req.user=accessToken;
                 next();
@@ -18,14 +17,32 @@ class AuthMiddleware{
             });
         }
     }
-  static userToken(username, id){
-    const securityToken=sign(
-            {name:username, id:id},
-            process.env.SECRET_KEY_API_KEY, 
-            {expiresIn:process.env.JWT_EXPIRES_IN}
-        );
-    return securityToken;
+  static generateToken(user){
+    const payload = {
+        id: user.id,
+        name: user.username,
+        email: user.email
+      };
+      const options = {
+        expiresIn: '1h'
+      };
+      return sign(payload, process.env.SECRET_KEY_API_KEY, options);
  }
+
+ static async refreshToken(req,res){
+    const oldToken = req.body.token;
+       try {
+        const decodedToken = verify(oldToken,process.env.SECRET_KEY_API_KEY);
+        // Generate a new token with the same user information
+        const newToken = this.generateToken(decodedToken);
+    
+        // Send the new token in the response
+        res.json({ token: newToken });
+       } catch (error) {
+         // Handle token verification error
+         res.status(400).json({ error: 'Invalid token' });
+       }
+   }
 
  static authRole(role){
     return (req,res,next)=>{

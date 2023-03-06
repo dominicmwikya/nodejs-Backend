@@ -42,7 +42,14 @@ class UseApi {
       throw new Error(error);
     }
   }
-
+  async verifyUser(token) {
+    try {
+      const response = await apiClient.post('/users/auth', token);
+      return response;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 }
 
 export const usePost = () => {
@@ -77,5 +84,12 @@ export const useLogin = () => {
   const api5 = new UseApi();
   return {
     LoginUser: api5.userLogin.bind(api5),
+  }
+}
+
+export const verifyUser = () => {
+  const api1 = new UseApi();
+  return {
+    verifyUser: api1.verifyUser.bind(api1),
   }
 }

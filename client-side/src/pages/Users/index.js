@@ -5,6 +5,7 @@ import Card from '../../Components/UI/Cards'
 import Userform from './userform';
 import { useFetchData } from '../../api/user/UseApi';
 import ErrorBoundary from '../../Components/ErrorBoundary';
+import { checkTokenExpiration } from '../../Auth/Auth';
 export default function Index() {
   const[show, setShow]=useState(false);
   const showModal=()=>setShow(true);
@@ -12,9 +13,14 @@ export default function Index() {
   const {getUser}=useFetchData();
   const [userlist, setUserList]=useState([])
    const cols=['id','username','email'];
+   const token = localStorage.getItem('secretKey');
    useEffect(()=>{
-    const users= getUser();
-    setUserList(users)
+    checkTokenExpiration(token).then(()=>{
+      const users= getUser();
+      setUserList(users)
+    }).catch(error=>{
+      console.log(error)
+    })
    },[])
   const roles=[
     {

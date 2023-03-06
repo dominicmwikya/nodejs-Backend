@@ -4,14 +4,17 @@ import Cards from "../../Components/UI/Cards"
 import { useLogin } from '../../api/user/UseApi';
 import { useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
+import { checkTokenExpiration } from '../../Auth/Auth';
+import { AuthContext } from '../../ContextAPI/AuthContext';
 export default function Index() {
-
+  const { user, setUser } = useContext(AuthContext);
   const {LoginUser}=useLogin();
-      const {setAuthState}=useContext(AuthtextAuthContext);
       const [values, setValues]=useState({
       email:"",
       password:""
   });
+
+  
   const navigate=useNavigate()
   const handleChange=(e)=>{
       let name= e.target.name;
@@ -26,28 +29,16 @@ export default function Index() {
 
 const _submit = async (e) => {
   e.preventDefault();
-  try {
-    const response = await LoginUser(values);
-    localStorage.setItem("secretKey", response.data.secretKey);
-    setAuthState({
-      username:response.data.username,
-      id:response.data.id,
-      role:response.data.role
-    })
-    swal({
-      text:response.data.message,
-      icon:'success',
-      title:"Welcome!",
-    }).then(()=>{
-      navigate('/')
-    })
-  } catch (error) {
-    swal({
-      title: 'Error!',
-      text: error.message, // Display only the error message
-      icon: 'warning',
-    });
-  }
+ try {
+    const result=await LoginUser(values);  
+     localStorage.setItem('accessToken', result.data.secretKey);
+     setUser({username:result.data.username, role:result.data.id, isLogged:true});
+     navigate('/')
+ } catch (error) {
+  console.log(error.message)
+ }
+
+ 
 }
   return (
     <div className='container'>
@@ -56,6 +47,7 @@ const _submit = async (e) => {
             <Cards>
               <form onSubmit={_submit}>
                   <h3>User Login</h3>
+                  {user.username}
                   <div className="mb-3">
                     <label>Email address</label>
                   <input

@@ -61,15 +61,20 @@ static deleteUser = async(req, res) => {
       if (!isValidPassword) {
         return res.status(400).json({ error: 'Invalid  password' });
       }
-        const result=AuthMiddleware.userToken(user.username, user.id);
+        const result=AuthMiddleware.generateToken(user);
         return res.json({
                    secretKey: result,
                    username:user.username,
                    role:user.role,
                    id:user.id,
                    isLoggedin:true,
-                   message:"Login successful"
+                   message:"Login successful",
+                   user:req.user
         });
-     }
+     };
+
+   
 };
+
+
 module.exports = {UserController };
