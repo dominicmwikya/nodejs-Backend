@@ -1,5 +1,18 @@
 const {Items}= require('../models')
+const{ItemServices} = require('../Services/itemService')
 class ItemsController{
+    static fetchItems=async(req,res)=>{
+       try {
+            const items= await ItemServices.getItems();
+          
+            res.send(items);
+       } catch (error) {
+
+        // throw new Error(error)
+             res.status(400).json({error:error});
+       }
+    }
+
     static createItem= async(req,res)=>{
         const {item_name, item_category, min_qty}= req.body;
         try {
@@ -15,9 +28,9 @@ class ItemsController{
      static getItems=async(req,res)=>{
          try {
               const items=await Items.findAll();
-                  await res.status(200).send(items); 
+              res.status(200).send(items); 
          } catch (error) {
-             await res.send({error:error});
+             return res.send({error:error});
          }  
      }
      

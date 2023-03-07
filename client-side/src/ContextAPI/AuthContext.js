@@ -21,15 +21,16 @@ function AuthProvider(props) {
     if (token) {
       try {
         // Verify the access token
-        const result = await axios.get('http://localhost:3001/users/auth', {
-          headers: { accessToken: token }
-        });
-        setUser({ username: result.data.name, id: result.data.id, isLogged: true });
-        return user;
+        const result = await axios.get('http://localhost:3001/users/auth', {  headers: { token: token } });
+
+        setUser({ username: result.data.username, id: result.data.id, isLogged: true });
+             return user;
+
+            
       } catch (error) {
-        setUser({ ...user, isLogged: false });
-        localStorage.removeItem('accessToken');
-        throw new Error(error);
+          setUser({ ...user, isLogged: false });
+          localStorage.removeItem('accessToken');
+          throw new Error(error);
       }
     } else {
       throw new Error("No access token ");

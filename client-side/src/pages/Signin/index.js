@@ -31,8 +31,11 @@ const _submit = async (e) => {
   e.preventDefault();
  try {
     const result=await LoginUser(values);  
+
      localStorage.setItem('accessToken', result.data.secretKey);
-     setUser({username:result.data.username, role:result.data.id, isLogged:true});
+     console.log("my token login "+ result.data.secretKey)
+     console.log('user name after login'+  result.data.user.username)
+     setUser({username:result.data.user.username, role:result.data.user.role, id:result.data.user.id, isLogged:true});
      navigate('/')
  } catch (error) {
   console.log(error.message)

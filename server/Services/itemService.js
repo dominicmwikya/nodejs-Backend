@@ -1,17 +1,25 @@
-const  Items =require('../models/Items')
+// const  {Items} =require('../models/Items')
+const {Items} = require('../models');
+class ItemServices{
+      static getItems=async()=>{
+        try {
+            const users= await Items.findAll();
+            return users;
+           } catch (error) {
+            return error;
+              
+           }
 
-function Create(data){
-    Items.create(data).then((response)=>{
-     res.status(200).send(response);
-}).catch((error)=>{
-    res.status(500).send({error:error.message})
-})
+     }
+
+      _createItem=async(data)=>{
+        try {
+            const response= await Items.create(data);
+            return response;
+        } catch (error) {
+            return error;
+        }
+     }
 }
-function Update(id, item){
-    Items.update({item_name:item.name},{where:{id:id}}).then(()=>{}).catch((e)=>{
 
-    })
-}
-
-
-module.exports={Update, Create}
+module.exports={ItemServices}

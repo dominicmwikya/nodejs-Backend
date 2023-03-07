@@ -3,15 +3,18 @@ const {sign}= require('jsonwebtoken')
 
 class AuthMiddleware{
     static validateToken(req,res, next){
-        const accessToken= req.header("accessToken");
+        const accessToken= req.header("token");
         if(!accessToken){
+          // console.log(" No access Token")
             return res.status(400).json({error:"No authorization header! Please login"});
         }else{
-            verify(accessToken, process.env.SECRET_KEY_API_KEY,(err)=>{
+            verify(accessToken, process.env.SECRET_KEY_API_KEY,(err, decoded)=>{
             if(err){
-                res.status(400).json({error:"User authentication failed"});
+              // console.log("Error Veriging the code "+err)
+                return res.status(400).json({error:"User authentication failed"});
             }else{
-                req.user=accessToken;
+              const userId = decoded.id;
+              req.userId = userId;
                 next();
              }
             });
@@ -26,7 +29,10 @@ class AuthMiddleware{
       const options = {
         expiresIn: '1h'
       };
-      return sign(payload, process.env.SECRET_KEY_API_KEY, options);
+
+      const token = sign(payload, process.env.SECRET_KEY_API_KEY, options);
+       return { token, user };
+      // return sign(payload, process.env.SECRET_KEY_API_KEY, options);
  }
 
  static async refreshToken(req,res){
@@ -35,7 +41,6 @@ class AuthMiddleware{
         const decodedToken = verify(oldToken,process.env.SECRET_KEY_API_KEY);
         // Generate a new token with the same user information
         const newToken = this.generateToken(decodedToken);
-    
         // Send the new token in the response
         res.json({ token: newToken });
        } catch (error) {

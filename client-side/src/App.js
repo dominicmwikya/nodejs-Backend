@@ -1,4 +1,4 @@
-import React,{useContext, useEffect, useState} from 'react';
+import React,{useContext} from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from  './pages/Home'
 import Dashboard from './pages/Dashboard'
@@ -9,6 +9,7 @@ import Login from './pages/Signin'
 import Register from './pages/Signup'
 import NavBar from './Components/UI/Navbar'
 import ErrorBoundary from './Components/ErrorBoundary';
+
 export default function App() {
   return (
     <div className="App">

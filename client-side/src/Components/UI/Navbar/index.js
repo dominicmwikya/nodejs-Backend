@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { AuthContext } from '../../../ContextAPI/AuthContext';
-const Index = ({logout}) => {
+const Index = () => {
   const {user, handleLogout}=useContext(AuthContext)
 	return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -26,7 +26,12 @@ const Index = ({logout}) => {
             </NavDropdown.Item>
             <NavDropdown.Item href="/purchase">Purchase items</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link><button onClick={handleLogout}>Logout</button></Nav.Link>
+            {/* <Nav.Link>{user.username}</Nav.Link> */}
+            <NavDropdown title='actions'   id="collasible-nav-dropdown">
+            <NavDropdown.Item >{user.username}</NavDropdown.Item>
+            <NavDropdown.Item><button onClick={handleLogout}>Logout</button></NavDropdown.Item>
+            </NavDropdown>
+            {/* <Nav.Link><button onClick={handleLogout}>Logout</button></Nav.Link> */}
           </>
         ):
         (
@@ -37,7 +42,7 @@ const Index = ({logout}) => {
         )
         
       }
-             
+             {console.log("username"+ user.username)}
             
              </Nav>
       </Navbar.Collapse>

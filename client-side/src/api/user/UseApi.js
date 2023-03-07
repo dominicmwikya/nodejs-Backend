@@ -8,7 +8,7 @@ class UseApi {
       throw new Error(error.response.data.message);
     }
   }
-  async getUser() {
+  async getUsers() {
     try {
       const response = await apiClient.get('/users');
       return response;
@@ -62,7 +62,7 @@ export const usePost = () => {
 export const useFetchData = () => {
   const api2 = new UseApi();
   return {
-    getUser: api2.getUser.bind(api2)
+    getUsers: api2.getUsers.bind(api2)
   }
 }
 export const useDeleteUser = () => {

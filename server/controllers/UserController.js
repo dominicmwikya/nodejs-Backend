@@ -5,8 +5,9 @@ const {Validator}= require('../Middleware/Validator');
 
 class UserController{
   static createUser = async(req, res) => {
+    const {username, email, password, role}=req.body;
     const response=await UserServices.getUserByEmail(email);
-    if(response===false){
+    if(response==0){
       const hashedResult= await Validator.hashPassword(password);
       const result= await UserServices.registerUser(username,email,hashedResult,role);
       if(result){
@@ -20,13 +21,14 @@ class UserController{
     }   
 }
 static getUsers=async(req,res)=>{
-  try {
-      const users= await Users.findAll();
-      return res.send(users);
-  } catch (error) {
-      res.status(401).send({error:error})
-  }
-}
+ 
+    try {
+      const users= await UserServices.findAllUsers();
+      res.send(users);
+    } catch (error) {
+          res.status(400).json({error:error})
+    }
+};
 
 static updateUser = async(req, res) => {
   const {username, email} = req.body;
@@ -51,29 +53,37 @@ static deleteUser = async(req, res) => {
  }
 };
 
- static async login(req, res) {
+ static async login(req, res, next) {
       const { email, password } = req.body;
-      const user=await  UserServices.getUserByEmail(email);
-      if (!user) {
-        return res.status(400).json({ error: 'Invalid email' });
+      try {
+        const user=await  UserServices.getUserByEmail(email);
+        const isValidPassword = await Validator.comparePassword(password, user.password);
+            if (!user || !isValidPassword) {
+              return res.status(400).json({ error: 'Invalid email or password' });
+            }
+          else{
+            const tokenObject=AuthMiddleware.generateToken(user);
+            res.json({ secretKey: tokenObject.token, user: tokenObject.user });
+        }
+      } catch (error) {
+        next(error)
       }
-      const isValidPassword = await Validator.comparePassword(password, user.password);
-      if (!isValidPassword) {
-        return res.status(400).json({ error: 'Invalid  password' });
-      }
-        const result=AuthMiddleware.generateToken(user);
-        return res.json({
-                   secretKey: result,
-                   username:user.username,
-                   role:user.role,
-                   id:user.id,
-                   isLoggedin:true,
-                   message:"Login successful",
-                   user:req.user
-        });
-     };
+    };
 
-   
+  static async auth(req, res) {
+      const id= req.userId;
+      try {
+        const user = await UserServices.findUserByPk(id)
+        if (!user) {
+          throw new Error('Invalid user!');
+        }
+        res.json(user);
+      } catch (error) {
+        res.status(401).json({error:error});
+      }
+    };
+    
+
 };
 
 

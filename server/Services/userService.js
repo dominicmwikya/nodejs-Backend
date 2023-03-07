@@ -7,7 +7,8 @@ class UserServices{
     } catch (error) {
       return {
         error:error,
-        status:400
+        status:400,
+        code:0,
       }
     }
     }
@@ -25,6 +26,20 @@ class UserServices{
           role:role
         });
       return result
+  }
+  static findAllUsers=async()=>{
+   try {
+    const users= await Users.findAll();
+    return users;
+   } catch (error) {
+       throw new Error(error)
+      
+   }
+  }
+
+  static findUserByPk=async(pk)=>{
+    const user= await Users.findByPk(pk);
+    return user;
   }
 }
 module.exports={UserServices}

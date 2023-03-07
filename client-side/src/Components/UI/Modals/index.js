@@ -11,7 +11,7 @@ const index=({footer, show, header, children,onClose, size})=> {
               {children}
           </Modal.Body>
           <Modal.Footer>
-               {footer}
+               <button onClick={onClose}><i className="fa fa-times" aria-hidden="true"  style={{color:"red"}}></i></button>
           </Modal.Footer>
       </Modal>
     </div>
