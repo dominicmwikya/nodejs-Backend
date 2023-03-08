@@ -5,7 +5,7 @@ import Input from '../../Components/UI/Input';
 import Dropdown from '../../Components/UI/Dropdown';
 import swal from 'sweetalert';
 import { usePost } from '../../api/user/UseApi';
-const Index = ({roles}) => {
+const Index = ({roles, closeModal}) => {
   const { createUser } = usePost();
   const formik = useFormik({
     initialValues: {
@@ -27,7 +27,6 @@ const Index = ({roles}) => {
     onSubmit: values => {
       createUser(values).then((response)=>{
         if(response.error){
-          console.log(response.error)
               swal({
                 text:response.error,
                 title:'Failed',
@@ -41,10 +40,14 @@ const Index = ({roles}) => {
             timer:3500,
             icon:'success'
           })
+          closeModal();
         }
-      })
+      });
     },
   });
+
+
+
   return (
     <div className="container">
     <div className="row">

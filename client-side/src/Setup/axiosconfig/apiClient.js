@@ -1,6 +1,8 @@
 import axios from 'axios';
+// require('dotenv').config()
   const apiClient = axios.create({
   baseURL:'http://localhost:3001',
+  // timeout: 1000,
   // baseURL:process.env.REACT_APP_API_URL,
   headers:{token:localStorage.getItem('accessToken')}
 });

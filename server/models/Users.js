@@ -25,8 +25,22 @@ module.exports=(sequelize, DataTypes)=>{
         type:DataTypes.INTEGER(5),
         allowNull:false,
         defaultValue:1
-       }, 
-    })
+       },
+       deletedAt: {
+         type: DataTypes.DATE,
+         allowNull: true,
+         defaultValue: null
+       }
+    },
+    {
+      paranoid: true,
+      indexes: [
+        {
+          name: 'Users_deletedAt_index',
+          fields: ['deletedAt']
+        }
+      ]
+     })
     Users.associate=(models)=>{
         Users.hasMany(models.Items, {
            onDelete:'cascade'

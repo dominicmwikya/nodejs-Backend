@@ -6,19 +6,22 @@ const {Validator}= require('../Middleware/Validator');
 class UserController{
   static createUser = async(req, res) => {
     const {username, email, password, role}=req.body;
-    const response=await UserServices.getUserByEmail(email);
-    if(response==0){
-      const hashedResult= await Validator.hashPassword(password);
-      const result= await UserServices.registerUser(username,email,hashedResult,role);
-      if(result){
-         res.send("User created successfully");  }
-      else{ 
-         res.send({erorr:"Error creating user"});  
-       }
-     }
-    else{
-      return res.send({error:email+ " already in use"});
-    }   
+    try {
+      const user=await UserServices.getUserByEmail(email);
+      if(user){
+        return res.send({error:email+ " already in use"});
+      }else{
+        const hashedResult= await Validator.hashPassword(password);
+        const result= await UserServices.registerUser(username,email,hashedResult,role);
+        if(result){
+           res.send("User created successfully");  }
+        else{ 
+           res.send({erorr:"Error creating user"});  
+         }
+      }
+    } catch (error) {
+        res.send(error);
+    }
 }
 static getUsers=async(req,res)=>{
  
@@ -44,27 +47,41 @@ static updateUser = async(req, res) => {
 };
 
 static deleteUser = async(req, res) => {
- try {
-      const id = await req.params.id;
-      const result= await UserServices.destroyUser(id);
-      return res.send(result);
- } catch (error) {
-     res.status(500).send({error});
- }
+const id=await req.params.id;
+try {
+    const record= await UserServices.findUserByPk(id);
+    // console.log(record)
+    if(record) {
+      const response= await UserServices.destroyUser(id);
+      // console.log(response)
+        if(response){
+            res.send("User with id "+id+" deleted successfully")
+        }
+    }
+    else {
+       res.json({error: "User with "+id +" Already Deleted!"});
+    }
+} catch (error) {
+      res.json({error:error});
+}
 };
 
  static async login(req, res, next) {
       const { email, password } = req.body;
       try {
         const user=await  UserServices.getUserByEmail(email);
-        const isValidPassword = await Validator.comparePassword(password, user.password);
-            if (!user || !isValidPassword) {
-              return res.status(400).json({ error: 'Invalid email or password' });
-            }
-          else{
-            const tokenObject=AuthMiddleware.generateToken(user);
-            res.json({ secretKey: tokenObject.token, user: tokenObject.user });
-        }
+          if(!user){
+            return res.status(400).json({error:"Invalid Username or password"});
+          }else{
+              const isValidPassword = await Validator.comparePassword(password, user.password);
+              if(!isValidPassword){
+                res.status(400).json({error:"Invalid Username or password"});
+              }else{
+                const tokenObject=AuthMiddleware.generateToken(user);
+                return res.json({ secretKey: tokenObject.token, user: tokenObject.user });
+              }
+            // console.log(user)
+          }
       } catch (error) {
         next(error)
       }

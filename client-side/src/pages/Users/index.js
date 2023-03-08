@@ -3,7 +3,8 @@ import Table1 from '../../Components/UI/Table';
 import Modal from '../../Components/UI/Modals'
 import Card from '../../Components/UI/Cards'
 import Userform from './userform';
-import { useFetchData } from '../../api/user/UseApi';
+import swal from 'sweetalert';
+import { useFetchData, useDeleteUser } from '../../api/user/UseApi';
 import ErrorBoundary from '../../Components/ErrorBoundary';
 import { checkTokenExpiration } from '../../Auth/Auth';
 export default function Index() {
@@ -11,18 +12,17 @@ export default function Index() {
   const showModal=()=>setShow(true);
   const closeModal=()=>setShow(false)
   const {getUsers}=useFetchData();
+  const {deleteUser}=useDeleteUser();
   const [userlist, setUserList]=useState([])
    const cols=['id','username','email'];
 
    useEffect(() => {
     const fetchUsers = async () => {
-      // fetch users here
       const users= await getUsers();
       setUserList(users.data);
-      // console.log(users)
     };
     fetchUsers();
-  }, []);
+  }, [userlist]);
   
   const handleEdit = (id) => {
     // handle edit logic here
@@ -30,11 +30,44 @@ export default function Index() {
     alert(id)
   };
 
-  const handleDelete = (id) => {
-    // handle delete logic here
-    alert(id)
-  };
+  const handleDelete = async(id) => {
 
+    swal({
+      title: "Are you sure?",
+      text: "This operation is irreversible!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((confirm)=>{
+      if(confirm){
+        deleteUser(id).then(((response)=>{
+          console.log(response)
+          swal({
+                 text:response.data,
+                 title:'Success',
+                 icon:"success",
+                 timer:3000
+               });
+        })).catch((error)=>{
+          console.log(error)
+          swal({
+            text:error,
+            title:'Warning!',
+            icon:"warning",
+            timer:3500
+          })
+        })
+      }else{
+        swal({
+          text:"Item Not deleted!",
+          title:'Canceled!',
+          icon:"success",
+          timer:3000
+        });
+      }
+    })
+    
+  };
   const handleUpdatePassword = (id) => {
     // handle update password logic here
   };
@@ -45,11 +78,11 @@ export default function Index() {
     },
     {
       'id':2,
-      "item_name":'Advanced'
+      "item_name":'Normal'
     },
     {
       'id':3,
-      "item_name":'Basic'
+      "item_name":'guest'
     }
   ]
   return (
@@ -68,7 +101,7 @@ export default function Index() {
           
         <Modal  show={show} onClose={closeModal} header=""  footer="item modal" size='md'>
                 <Card _cardName="New User Form">
-                    <Userform roles={roles}  />
+                    <Userform roles={roles} closeModal={closeModal} />
                 </Card>
             </Modal>
         </ErrorBoundary>

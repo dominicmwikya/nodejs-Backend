@@ -4,25 +4,28 @@ class ItemsController{
     static fetchItems=async(req,res)=>{
        try {
             const items= await ItemServices.getItems();
-          
             res.send(items);
        } catch (error) {
-
-        // throw new Error(error)
              res.status(400).json({error:error});
        }
     }
 
     static createItem= async(req,res)=>{
         const {item_name, item_category, min_qty}= req.body;
-        try {
-         const result= await Items.create({item_name:item_name, item_category:item_category, min_qty:min_qty});
-         if(result){
-             await res.status(200).send("Item "+result.id +"  Added successfully");
-         }
-        } catch (error) {
-             await res.send({error:error})
-        }
+           try {
+            const itemExt= await ItemServices.findItemByName(item_name);
+            if(itemExt){
+                 res.json({error:"item "+itemExt.item_name+" already exist! choose new name"});
+            }else{
+                const response= await ItemServices.registerItem(item_name, item_category, min_qty);
+                if(response){
+                 res.status(200).json(item_name+" created successfully");
+                }
+            }
+           } catch (error) {
+               res.status(400).json({error:"error  creating the item! Contact system Admin!"});
+           }
+       
      }
      
      static getItems=async(req,res)=>{
@@ -43,29 +46,32 @@ class ItemsController{
          }).catch(error=>res.send({error:error.message}));
      }
      static getById=async(req,res)=>{
+        const id=await req.params.id;
        try {
-         const id=res.params.id;
-         const item= await Items.findOne({where:{id:id}});
-         await res.status(200).send(item);
+       
+         const item= await ItemServices.findItemByByPk(id);
+         await res.send(item);
        } catch (error) {
            res.send({error:error});
        }
      }
+
+
      static deleteItem=async(req,res)=>{
-         const delete_id=await req.params.id;
+         const id=await req.params.id;
              try {
-                 const record= await getById(delete_id);
-                 if(record===null) {
-                     res.send({error:delete_id +" Not Found"});
-                 }
-                 else {
-                     const response= await Items.destroy({where:{id:record.id}});
+                 const record= await ItemServices.findItemByByPk(id);
+                 if(record) {
+                    const response=  await ItemServices.removeItem(record.id)
                      if(response){
-                         res.send("item with id "+delete_id+" deleted successfully")
+                         res.send("item with id "+id+" deleted successfully")
                      }
                  }
+                 else {
+                    res.json({error: "item with "+id +" Already Deleted!"});
+                 }
              } catch (error) {
-                   res.status(500).json({error:error});
+                   res.json({error:error});
              }
      }
 }

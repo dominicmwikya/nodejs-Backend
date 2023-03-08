@@ -5,11 +5,7 @@ class UserServices{
      const user = await Users.findOne({where:{email:value, flag:1}});
          return user;
     } catch (error) {
-      return {
-        error:error,
-        status:400,
-        code:0,
-      }
+      return error;
     }
     }
 
@@ -29,14 +25,15 @@ class UserServices{
   }
   static findAllUsers=async()=>{
    try {
-    const users= await Users.findAll();
+    const users= await Users.findAll({attributes: ['username', 'email', 'role']});
     return users;
    } catch (error) {
        throw new Error(error)
       
    }
   }
-
+    
+ 
   static findUserByPk=async(pk)=>{
     const user= await Users.findByPk(pk);
     return user;

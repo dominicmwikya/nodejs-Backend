@@ -3,7 +3,6 @@ class useItemApi{
      async getItems(){
       try {
         const response= await apiClient.get('/items')
-
         return response;
       } catch (error) {
         throw new Error(error);
@@ -19,10 +18,18 @@ class useItemApi{
       }
    }
 
-   async deleteItem(id, loggedUser){
+   async deleteItem(id){
     try {
-        const response= await apiClient.delete(`/items/delete/${id}`, loggedUser);
+        const response= await apiClient.delete(`/items/${id}`);
         return response;
+    } catch (error) {
+      throw new Error(error);
+    }
+   }
+   async  getUpdateItem(id){
+    try {
+         const response= await apiClient.get(`/items/${id}`);
+         return response
     } catch (error) {
       throw new Error(error);
     }
@@ -42,5 +49,21 @@ export const useItemAdd=()=>{
   const api3= new useItemApi();
   return {
     addItem:api3.addItem.bind(api3)
+  }
+}
+
+
+export const useItemRemove=()=>{
+  const api= new useItemApi();
+  return {
+    removeItem:api.deleteItem.bind(api)
+  }
+}
+
+
+export const useFetchUpdateItem=()=>{
+  const api= new useItemApi();
+  return {
+    getUpdateItem:api.getUpdateItem.bind(api)
   }
 }

@@ -1,5 +1,4 @@
 import React, {useContext, useState} from 'react'
-import { AuthtextAuthContext } from '../../ContextAPI/AuthtextAuthContext';
 import Cards from "../../Components/UI/Cards"
 import { useLogin } from '../../api/user/UseApi';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +30,6 @@ const _submit = async (e) => {
   e.preventDefault();
  try {
     const result=await LoginUser(values);  
-
      localStorage.setItem('accessToken', result.data.secretKey);
      console.log("my token login "+ result.data.secretKey)
      console.log('user name after login'+  result.data.user.username)
@@ -39,6 +37,14 @@ const _submit = async (e) => {
      navigate('/')
  } catch (error) {
   console.log(error.message)
+  if(error.message){
+     swal({
+        text:error.message,
+        title:"Login Failed",
+        icon:"warning",
+        timer:2000
+     })
+  }
  }
 
  

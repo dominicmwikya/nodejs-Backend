@@ -12,5 +12,7 @@ const userRouter=express.Router()
 
         userRouter.post('/post', UserController.createUser);
 
+       userRouter.delete('/:id', UserController.deleteUser)
+
         userRouter.post('/verify_token', AuthMiddleware.refreshToken)
 module.exports=userRouter
