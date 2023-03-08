@@ -1,7 +1,7 @@
 import React, {useState}from 'react'
 import { Table } from 'react-bootstrap';
-
- const Index=({className, cols,data, error,_edit,_delete}) =>{
+import './Table.css'
+ const Index=({className, showModal,data, error,_edit,_delete}) =>{
     const [currentPage, setCurrentPage] = useState(1);
     const[currentIndex, setCurrentIndex]=useState(1);
     const [rowsPerPage] = useState(6);
@@ -56,8 +56,17 @@ import { Table } from 'react-bootstrap';
 
 
   return (
-<>
-<Table className={className}>
+      <div className='table-container'> 
+
+<div className='container'>
+       <div className='row'>
+         <div className='col-md-8 col-sm-10 col-10 mx-auto'>
+          <div className='table-responsive'>
+          <i className='btn fa fa-plus ' onClick={showModal} 
+              style={{color:"green", color:'white', backgroundColor:'green',
+              margin: '10px 0px', borderRadius:'5px', padding:'10px 40px'}}>
+          </i>
+          <Table className={className}>
          {renderHeader()}
         {renderBody()}
         
@@ -69,7 +78,12 @@ import { Table } from 'react-bootstrap';
      </button>
    ))}
  </div>
-</>
+          </div>
+    </div>
+    </div>
+    </div>
+    
+      </div>
   )
 }
 export default  Index;

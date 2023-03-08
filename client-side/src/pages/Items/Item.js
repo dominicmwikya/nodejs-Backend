@@ -111,35 +111,23 @@ export default function Item() {
   }
 
   return (
-    <div className='row'>
-        <div className='col-md-6'>
-          <i className='btn fa fa-plus ' onClick={showModal} 
-              style={{color:"green", color:'white', backgroundColor:'green',
-              margin: '10px 0px', borderRadius:'5px', padding:'10px 40px'}}>
-          </i>
-          {/* {
-            !user.islogged?(
-              <>
-               <Table1 cols={cols} data={items}  _edit={handleEdit} _delete={handleDelete}
-            className='table table-striped table-bordered hover' 
-          
-          />
-              </>
-            ):"Please login"
-          } */}
+  
+        
 
-           <Table1  data={items}  _edit={handleEdit} _delete={handleDelete}
+          <>
+          <Table1  data={items}  _edit={handleEdit} _delete={handleDelete}   showModal={showModal}
             className='table table-striped table-bordered hover' 
           
           />
-         
-          <Modal  show={show} onClose={closeModal} header="Add Item Modal"  footer="item modal">
+
+<Modal  show={show} onClose={closeModal} header="Add Item Modal"  footer="item modal">
             <Card _cardName="Create Item">
                   <Itemform data={items} values={values} handleValueChange={handleValueChange} handleSubmit={handleSubmit} />
               </Card>
           </Modal>
-        </div>
-    </div>
+          </>
+         
+        
   );
 }
 

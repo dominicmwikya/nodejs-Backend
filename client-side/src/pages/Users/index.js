@@ -86,25 +86,22 @@ export default function Index() {
     }
   ]
   return (
-    <div className='col-md-6'>
-            <i className='btn fa fa-plus ' onClick={showModal} 
-                style={{color:"green", color:'white', backgroundColor:'green',
-                margin: '10px 0px', borderRadius:'5px', padding:'10px 40px'}}>
-            </i>
+
+    <div className='container'>
+        
         <ErrorBoundary>
         <Table1 cols={cols} data={userlist}   _edit={handleEdit} _delete={handleDelete}
+        showModal={showModal}
               className='table table-striped table-bordered hover' 
             />
         </ErrorBoundary>
         <ErrorBoundary>
-
-          
         <Modal  show={show} onClose={closeModal} header=""  footer="item modal" size='md'>
                 <Card _cardName="New User Form">
                     <Userform roles={roles} closeModal={closeModal} />
                 </Card>
             </Modal>
         </ErrorBoundary>
-    </div>
+      </div>
   )
 }
