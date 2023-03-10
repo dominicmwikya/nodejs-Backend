@@ -21,17 +21,15 @@ const Index = () => {
             <Nav.Link href="/users">users</Nav.Link>
             <NavDropdown title="Items" id="collasible-nav-dropdown">
             <NavDropdown.Item href="/items">Item List</NavDropdown.Item>
-            <NavDropdown.Item href="/receive">
-            Receive Items
+            <NavDropdown.Item href="/orders">
+            Orders
             </NavDropdown.Item>
-            <NavDropdown.Item href="/purchase">Purchase items</NavDropdown.Item>
+            <NavDropdown.Item href="/purchases">Purchases</NavDropdown.Item>
             </NavDropdown>
-            {/* <Nav.Link>{user.username}</Nav.Link> */}
             <NavDropdown title='actions'   id="collasible-nav-dropdown">
             <NavDropdown.Item >{user.username}</NavDropdown.Item>
             <NavDropdown.Item><button onClick={handleLogout}>Logout</button></NavDropdown.Item>
             </NavDropdown>
-            {/* <Nav.Link><button onClick={handleLogout}>Logout</button></Nav.Link> */}
           </>
         ):
         (

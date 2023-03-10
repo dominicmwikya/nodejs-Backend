@@ -1,18 +1,15 @@
+import express from 'express';
+import { UserController } from '../controllers/UserController';
+import { AuthMiddleware } from '../middleware/AuthMiddleware';
+import { Validator } from '../middleware/Validator';
 
-const express= require('express')
-const userRouter=express.Router()
-    const {UserController}=require('../controllers/UserController')
-    const {AuthMiddleware} =require('../Middleware/AuthMiddleware')
-    const {Validator}=require('../Middleware/Validator')
+const userRouter = express.Router();
 
-        userRouter.get('/auth', AuthMiddleware.validateToken,  UserController.auth)
-        userRouter.post('/login',Validator.validateInput,UserController.login);
+userRouter.get('/auth', AuthMiddleware.validateToken, UserController.auth);
+userRouter.post('/login', Validator.validateInput, UserController.login);
+userRouter.get('/', AuthMiddleware.validateToken, UserController.getUsers);
+userRouter.post('/post', UserController.createUser);
+userRouter.delete('/:id', UserController.deleteUser);
+userRouter.post('/verify_token', AuthMiddleware.refreshToken);
 
-        userRouter.get('/', AuthMiddleware.validateToken,UserController.getUsers)
-
-        userRouter.post('/post', UserController.createUser);
-
-       userRouter.delete('/:id', UserController.deleteUser)
-
-        userRouter.post('/verify_token', AuthMiddleware.refreshToken)
-module.exports=userRouter
+export { userRouter };

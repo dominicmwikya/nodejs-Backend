@@ -1,19 +1,20 @@
 module.exports=(sequelize, DataTypes)=>{
+    const { INTEGER, DATE } = DataTypes;
 const Issued=sequelize.define("issued",{
     quantity:{
-        type:DataTypes.INTEGER,
+        type:INTEGER,
         allowNull:false,
     },
     issued_to:{
-        type:DataTypes.INTEGER,
+        type:INTEGER,
         allowNull:false,
     },
     requested_by:{
-        type:DataTypes.INTEGER,
+        type:INTEGER,
         allowNull:false,
     },
     date_issued:{
-        type:DataTypes.DATE,
+        type:DATE,
         allowNull:false,
         defaultValue:sequelize.fn('now')
     }

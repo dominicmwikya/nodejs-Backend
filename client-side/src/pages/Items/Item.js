@@ -4,10 +4,8 @@ import Card from '../../Components/UI/Cards'
 import Modal from '../../Components/UI/Modals'
 import Table1 from '../../Components/UI/Table';
 import swal from 'sweetalert'
-import { AuthContext } from '../../ContextAPI/AuthContext';
 import { useFetchItems,useItemAdd, useItemRemove,useFetchUpdateItem } from '../../api/item/useItemApi';
 export default function Item() {
-  // const {user}=useContext(AuthContext)
   const[show, setShow]=useState(false);
   const showModal=()=>setShow(true);
   const closeModal=()=>setShow(false)
@@ -26,6 +24,7 @@ export default function Item() {
       }, [items]);
     
       const handleEdit = (id) => {
+        alert(id)
         getUpdateItem(id).then((response)=>{
            console.log(response);
         }).catch(error=>{
@@ -70,7 +69,7 @@ export default function Item() {
         })
         
       };
-      
+      // console.log(user.id)
       const handleValueChange=(e)=>{
               let name=e.target.name
               let value=e.target.value
@@ -100,7 +99,7 @@ export default function Item() {
         timer:3000
       });
       setValues({
-      item_name:"", item_category:"",  min_qty:"",item_unit:'',item_description:""
+      item_name:"", item_category:"",  min_qty:"",item_unit:'',item_description:"", 
       });
       closeModal();
     }
@@ -111,22 +110,17 @@ export default function Item() {
   }
 
   return (
-  
-        
+    <div>
+      <Table1  data={items}  _edit={handleEdit} _delete={handleDelete}   showModal={showModal}
+         className='table table-striped table-bordered hover' 
+      />
 
-          <>
-          <Table1  data={items}  _edit={handleEdit} _delete={handleDelete}   showModal={showModal}
-            className='table table-striped table-bordered hover' 
-          
-          />
-
-<Modal  show={show} onClose={closeModal} header="Add Item Modal"  footer="item modal">
-            <Card _cardName="Create Item">
-                  <Itemform data={items} values={values} handleValueChange={handleValueChange} handleSubmit={handleSubmit} />
-              </Card>
-          </Modal>
-          </>
-         
+      <Modal  show={show} onClose={closeModal} header="Add Item Modal"  footer="item modal">
+        <Card _cardName="Create Item">
+        <Itemform data={items} values={values} handleValueChange={handleValueChange} handleSubmit={handleSubmit} />
+        </Card>
+      </Modal>
+    </div>       
         
   );
 }

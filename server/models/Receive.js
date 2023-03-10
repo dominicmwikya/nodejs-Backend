@@ -1,20 +1,22 @@
 module.exports=(sequelize, DataTypes)=>{
+    const { STRING, INTEGER, DATE } = DataTypes;
     const Receive=sequelize.define("Receive", {
         date_received:{
-            type:DataTypes.DATE,
+            type:DATE,
             allowNull:false,
             defaultValue:sequelize.fn('now')
          },
         quantity:{
-            type: DataTypes.INTEGER,
+            type:INTEGER,
             allowNull:false,
           },
         user:{
-            type:DataTypes.STRING,
+            type:STRING,
             allowNull:false,
             defaultValue:"admin"
         }
     });
+    
     Receive.associate=(models)=>{
         Receive.belongsTo(models.Items, {
            onDelete:'cascade'

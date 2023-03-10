@@ -13,77 +13,73 @@ import './Table.css'
  const indexOfLastRow = currentPage * rowsPerPage;
  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
  const currentRows = data.slice(indexOfFirstRow, indexOfLastRow);
-
  const totalPages = Math.ceil(data.length / rowsPerPage);
+
  const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     const newIndex = (pageNumber - 1) * rowsPerPage + 1;
     setCurrentIndex(newIndex);
   };
 
- const renderHeader=()=>{
-   return (
-    <thead>
-    <tr>
-        <th>#ID</th>
-    {columns.map((column) => (
+  const displayedColumns = columns.filter((column) => column !== 'id');
+  const renderHeader = () => {
+    return (
+      <thead>
+        <tr>
+          <th>#ID</th>
+          {displayedColumns.map((column) => (
             <th key={column}>{column.toLocaleUpperCase().replace("_", '  ')}</th>
           ))}
-    <th colSpan={2}>Actions</th>
-    </tr>
-  </thead>
-   )
-  }
+          <th colSpan={2}>Actions</th>
+        </tr>
+      </thead>
+    );
+  };
 
   const renderBody=()=>{
     return (
         <tbody>
-             {currentRows.map((row, index) => (
-          <tr key={index}>
-            <td>#{currentIndex+ index}</td>
-            {columns.map((column) => (
-               <td key={column}>{row[column]}  </td>
-            ))}
-             
-              <td> <i className=" fas fa-edit"    onClick={()=>_edit(row.id)  } style={{color:'green'}}></i>  </td>
-              <td > <i className='btn ' onClick={()=>_delete(row.id)}> <i className="fas fa-trash"  style={{color:'red'}}></i> </i></td>
-          </tr>
-        ))}
-     </tbody>
+          {currentRows.map((row, index) => (
+            <tr key={index}>
+              <td>#{currentIndex+ index}</td>
+                {displayedColumns.map((column) => (
+                  <td key={column}>{row[column]}  </td>
+                ))}
+                <td> <i className=" fas fa-edit"    onClick={()=>_edit(row.id)  } style={{color:'green'}}></i>  </td>
+                <td > <i className='btn ' onClick={()=>_delete(row.id)}> <i className="fas fa-trash"  style={{color:'red'}}></i> </i></td>
+            </tr>
+          ))}
+       </tbody>
     )
   }
 
-
-
+  
   return (
       <div className='table-container'> 
-
-<div className='container'>
-       <div className='row'>
-         <div className='col-md-8 col-sm-10 col-10 mx-auto'>
-          <div className='table-responsive'>
-          <i className='btn fa fa-plus ' onClick={showModal} 
-              style={{color:"green", color:'white', backgroundColor:'green',
-              margin: '10px 0px', borderRadius:'5px', padding:'10px 40px'}}>
-          </i>
-          <Table className={className}>
-         {renderHeader()}
-        {renderBody()}
-        
-   </Table>
-   <div>
-   {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-     <button key={page} onClick={() => handlePageChange(page)}>
-       {page}
-     </button>
-   ))}
- </div>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-md-8 col-sm-10 col-10 mx-auto'>
+              <div className='table-responsive'>
+                <i className='btn fa fa-plus ' onClick={showModal} 
+                    style={{color:"green", color:'white', backgroundColor:'green',
+                    margin: '10px 0px', borderRadius:'5px', padding:'10px 40px'}}>
+                </i>
+                <Table className={className}>
+                  {renderHeader()}
+                  {renderBody()}
+                </Table>
+                  <div>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button key={page} onClick={() => handlePageChange(page)}>
+                      {page}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-    </div>
-    </div>
-    </div>
-    
+        </div>
       </div>
-  )
+    )
 }
 export default  Index;

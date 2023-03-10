@@ -1,26 +1,24 @@
-const {verify}= require('jsonwebtoken')
-const {sign}= require('jsonwebtoken')
-
-class AuthMiddleware{
-    static validateToken(req,res, next){
-        const accessToken= req.header("token");
-        if(!accessToken){
-          // console.log(" No access Token")
-            return res.status(400).json({error:"No authorization header! Please login"});
-        }else{
-            verify(accessToken, process.env.SECRET_KEY_API_KEY,(err, decoded)=>{
-            if(err){
-              // console.log("Error Veriging the code "+err)
-                return res.status(400).json({error:"User authentication failed"});
-            }else{
-              const userId = decoded.id;
-              req.userId = userId;
-                next();
-             }
-            });
+import { verify,sign } from 'jsonwebtoken';
+class AuthMiddleware {
+  static validateToken = (req, res, next) => {
+    const accessToken = req.header('token');
+    if (!accessToken) {
+      return res.status(400).json({ error: 'No authorization header! Please login' });
+    } else {
+      verify(accessToken, process.env.SECRET_KEY_API_KEY, (err, decoded) => {
+        if (err) {
+          return res.status(400).json({ error: 'User authentication failed' });
+        } else {
+          const { id:userId, name:username, email:email} = decoded;
+          req.userId = userId;
+          req.username = username;
+          req.email=email;
+          next();
         }
+      });
     }
-  static generateToken(user){
+  };
+  static generateToken=(user)=>{
     const payload = {
         id: user.id,
         name: user.username,
@@ -32,10 +30,9 @@ class AuthMiddleware{
 
       const token = sign(payload, process.env.SECRET_KEY_API_KEY, options);
        return { token, user };
-      // return sign(payload, process.env.SECRET_KEY_API_KEY, options);
  }
 
- static async refreshToken(req,res){
+ static  refreshToken=async(req,res)=>{
     const oldToken = req.body.token;
        try {
         const decodedToken = verify(oldToken,process.env.SECRET_KEY_API_KEY);
@@ -49,7 +46,7 @@ class AuthMiddleware{
        }
    }
 
- static authRole(role){
+ static authRole=(role)=>{
     return (req,res,next)=>{
         if(req.user.role !==role){
             return res.status(403).send('Access denied');
@@ -58,4 +55,4 @@ class AuthMiddleware{
     }
  }
 }
-module.exports={AuthMiddleware}
+export { AuthMiddleware };

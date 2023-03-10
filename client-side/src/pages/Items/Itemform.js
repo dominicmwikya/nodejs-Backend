@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState , useContext} from 'react'
 import InputField from '../../Components/UI/Input';
 import Button from '../../Components/UI/Buttons'
 import Dropdown from '../../Components/UI/Dropdown';
-export default function Itemform({data, handleSubmit, handleValueChange, values}) {
+export default function Itemform({handleSubmit, handleValueChange, values,}) {
   return (
     <form className='form-inline' onSubmit={handleSubmit}>
         <div className='form-group row'>
             <div className='col'>
+
+
                 <div className="input-group mb-2">
                     <InputField  className="form-control" 
                             type="text" 
