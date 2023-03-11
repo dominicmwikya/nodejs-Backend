@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {useNavigate} from 'react-router-dom'
@@ -8,6 +8,7 @@ import swal from 'sweetalert';
 import { usePost } from '../../api/user/UseApi';
 const Index = () => {
   const { createUser } = usePost();
+  const{error, setError}=useState([])
  const  navigate=useNavigate()
   const formik = useFormik({
     initialValues: {
@@ -17,36 +18,55 @@ const Index = () => {
       rpassword:'',
       role:''
     },
+    // validationSchema: Yup.object({
+    //   username: Yup.string()
+    //     .max(15, 'Must be 15 characters or less')
+    //     .required('Required'),
+    //   email: Yup.string().email('Invalid email address'),
+    //   password:Yup.string().min(4, "password must be atleast 4 characters").max(8,'password must be maximum of 8 characters'),
+    //   rpassword:Yup.string().oneOf([Yup.ref("password"), null],"passwords must match"),
+    //   role:Yup.string().required("Please select user role")
+    // }),
+
     validationSchema: Yup.object({
-      username: Yup.string()
-        .max(15, 'Must be 15 characters or less')
-        .required('Required'),
-      email: Yup.string().email('Invalid email address'),
-      password:Yup.string().min(4, "password must be atleast 4 characters").max(8,'password must be maximum of 8 characters'),
-      rpassword:Yup.string().oneOf([Yup.ref("password"), null],"passwords must match"),
-      role:Yup.string().required("Please select user role")
+      username: Yup.string(),
+      email: Yup.string(),
+      password:Yup.string(),
+      rpassword:Yup.string(),
+      role:Yup.string()
     }),
-    onSubmit: values => {
-      createUser(values).then((response)=>{
-        if(response.error){
-          console.log(response.error)
-              swal({
-                text:response.error,
-                title:'Failed',
-                timer:3500,
-                icon:'warning'
-          })
+    onSubmit: async (values) => {
+      try {
+        // Display a loading spinner or disable the submit button here
+    
+        const response = await createUser(values);
+  
+        // Display a success message in the SweetAlert modal
+        swal({
+          text:response.data,
+          title:'Success',
+          icon:'success',
+          timer:3000
+        })
+      } catch (error) {   
+        let errorMessage = 'An unknown error occurred. Please try again later.';
+      
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMessage = error.response.data.error;
+        } else if (error.message) {
+          errorMessage = error.message;
         }
-        else{
-          swal({text:response,
-            title:'success',
-            timer:3500,
-            icon:'success'
-          })
-          navigate('/')
-        }
-      })
-    },
+      
+        swal({
+          title: 'Failed',
+          text: errorMessage,
+          icon: 'error',
+          timer: 3500
+        });
+      }
+      
+    }
+    
   });
   return (
     <div className="container">
@@ -90,7 +110,7 @@ const Index = () => {
                           <span className="input-group-text">User Type: </span>
                       </div>
 
-                      <Dropdown  className='form-control' placeholder='User roles'name="role" id="role" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.role}  />
+                      {/* <Dropdown  className='form-control' placeholder='User roles'name="role" id="role" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.role}  /> */}
                       <select className='form-control' name="role" id="role" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.role} >
                         <option value=''>User Role</option>
                         <option value="Admin">Admin</option>

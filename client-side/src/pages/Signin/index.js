@@ -36,13 +36,12 @@ const _submit = async (e) => {
      setUser({username:result.data.user.username, role:result.data.user.role, id:result.data.user.id, isLogged:true});
      navigate('/')
  } catch (error) {
-  console.log(error.message)
   if(error.message){
      swal({
         text:error.message,
         title:"Login Failed",
         icon:"warning",
-        timer:2000
+        timer:3500
      })
   }
  }

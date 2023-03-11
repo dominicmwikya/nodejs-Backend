@@ -82,27 +82,30 @@ export default function Item() {
       
   const createItem=async()=>{
     const response= await addItem(values);
-    if(response.data.error){
-      swal({
-        text:response.data.error,
-        title:'Warning!',
-        icon:"warning",
-        timer:3500
-      })
+
+    console.log(response)
+    // alert(response)
+    // if(response.data.error){
+    //   swal({
+    //     text:response.data.error,
+    //     title:'Warning!',
+    //     icon:"warning",
+    //     timer:3500
+    //   })
      
-    }
-    else{
-      swal({
-        text:response.data,
-        title:'Success',
-        icon:"success",
-        timer:3000
-      });
-      setValues({
-      item_name:"", item_category:"",  min_qty:"",item_unit:'',item_description:"", 
-      });
-      closeModal();
-    }
+    // }
+    // else{
+    //   swal({
+    //     text:response.data,
+    //     title:'Success',
+    //     icon:"success",
+    //     timer:3000
+    //   });
+    //   setValues({
+    //   item_name:"", item_category:"",  min_qty:"",item_unit:'',item_description:"", 
+    //   });
+    //   closeModal();
+    // }
   }
   const handleSubmit=(ev)=>{
     ev.preventDefault()

@@ -3,10 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Input from '../../Components/UI/Input';
 import Dropdown from '../../Components/UI/Dropdown';
-import swal from 'sweetalert';
-import { usePost } from '../../api/user/UseApi';
-const Index = ({roles, closeModal}) => {
-  const { createUser } = usePost();
+const Index = ({roles, newUser}) => {
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -16,37 +13,18 @@ const Index = ({roles, closeModal}) => {
       role:''
     },
     validationSchema: Yup.object({
-      username: Yup.string()
-        .max(15, 'Must be 15 characters or less')
-        .required('Required'),
-      email: Yup.string().email('Invalid email address').required('Required'),
-      password:Yup.string().min(4, "password must be atleast 4 characters").max(8,'password must be maximum of 8 characters').required("Required field"),
-      rpassword:Yup.string().oneOf([Yup.ref("password"), null],"passwords must match").required("password must match"),
-      role:Yup.string().required("Please select user role")
+      // username: Yup.string()
+      //   .max(15, 'Must be 15 characters or less')
+      //   .required('Required'),
+      // email: Yup.string().email('Invalid email address').required('Required'),
+      // password:Yup.string().required("Required field"),
+      // rpassword:Yup.string().oneOf([Yup.ref("password"), null],"passwords must match").required("password must match"),
+      // role:Yup.string().required("Please select user role")
     }),
     onSubmit: values => {
-      createUser(values).then((response)=>{
-        if(response.error){
-              swal({
-                text:response.error,
-                title:'Failed',
-                timer:3500,
-                icon:'warning'
-          })
-        }
-        else{
-          swal({text:response,
-            title:'success',
-            timer:3500,
-            icon:'success'
-          })
-          closeModal();
-        }
-      });
+      newUser(values)
     },
   });
-
-
 
   return (
     <div className="container">

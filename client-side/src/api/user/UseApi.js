@@ -1,19 +1,20 @@
 import apiClient from "../../Setup/axiosconfig/apiClient";
 class UseApi {
-  async createUser(user) {
+  createUser = async (user) => {
     try {
       const response = await apiClient.post("/users/post", user);
       return response.data;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error);
     }
-  }
+  };
+  
   async getUsers() {
     try {
       const response = await apiClient.get('/users');
       return response;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error);
     }
   }
 
@@ -22,7 +23,7 @@ class UseApi {
       const response = await apiClient.delete(`/users/${id}`);
       return response;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error);
     }
   }
   async updateUser(id) {
@@ -30,7 +31,7 @@ class UseApi {
       const response = await apiClient.put(`/users/update/${id}`);
       return response;
     } catch (error) {
-      throw new Error(error.response.data.message);
+      throw new Error(error);
     }
   }
 

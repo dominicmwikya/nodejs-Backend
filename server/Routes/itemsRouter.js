@@ -1,10 +1,11 @@
 import express from 'express';
 import { AuthMiddleware } from '../middleware/AuthMiddleware';
 import { ItemsController } from '../controllers/ItemsController';
+import { validationSchema } from '../Middleware/ValidationSchemas/ValidationSchema';
 
 const itemsRouter = express.Router();
 
-itemsRouter.post('/create', AuthMiddleware.validateToken, ItemsController.createItem);
+itemsRouter.post('/create', AuthMiddleware.validateToken,validationSchema.itemSchema, ItemsController.createItem);
 
 itemsRouter.get('/', AuthMiddleware.validateToken, ItemsController.fetchItems);
 

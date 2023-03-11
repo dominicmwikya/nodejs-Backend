@@ -9,18 +9,24 @@ class UserController {
     try {
       const user = await UserServices.getUserByEmail(email);
       if (user) {
-        return res.send({ error: email + ' already in use' });
+
+        return res.status(400).json({ error: email + ' already in use' });
+
       } else {
+
         const hashedResult = await Validator.hashPassword(password);
         const result = await UserServices.registerUser(username, email, hashedResult, role);
+
         if (result) {
-          res.send('User created successfully');
+
+         return res.status(200).send('User created successfully');
+
         } else {
-          res.send({ erorr: 'Error creating user' });
+          return res.status(400).json({ erorr: 'Error creating user' });
         }
       }
     } catch (error) {
-      res.send(error);
+        return res.status(400).json({error:error});
     }
   };
 
@@ -29,7 +35,7 @@ class UserController {
       const users = await UserServices.findAllUsers();
       res.send(users);
     } catch (error) {
-      res.status(400).json({ error: error });
+       return res.status(400).json({ error: error });
     }
   };
 

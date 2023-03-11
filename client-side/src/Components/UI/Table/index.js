@@ -1,10 +1,15 @@
 import React, {useState}from 'react'
 import { Table } from 'react-bootstrap';
+
 import './Table.css'
  const Index=({className, showModal,data, error,_edit,_delete}) =>{
     const [currentPage, setCurrentPage] = useState(1);
     const[currentIndex, setCurrentIndex]=useState(1);
     const [rowsPerPage] = useState(6);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredData, setFilteredData] = useState({});
+    
+ 
     if (!data || !Array.isArray(data) || data.length === 0) {
         return <p>No data available.</p>;
       }
@@ -20,6 +25,8 @@ import './Table.css'
     const newIndex = (pageNumber - 1) * rowsPerPage + 1;
     setCurrentIndex(newIndex);
   };
+
+
 
   const displayedColumns = columns.filter((column) => column !== 'id');
   const renderHeader = () => {
@@ -64,6 +71,7 @@ import './Table.css'
                     style={{color:"green", color:'white', backgroundColor:'green',
                     margin: '10px 0px', borderRadius:'5px', padding:'10px 40px'}}>
                 </i>
+             
                 <Table className={className}>
                   {renderHeader()}
                   {renderBody()}

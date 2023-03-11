@@ -5,7 +5,7 @@ class useItemApi{
         const response= await apiClient.get('/items')
         return response;
       } catch (error) {
-        throw new Error(error);
+        throw new Error(error.response.data.message);
       }
    }
 
@@ -14,7 +14,9 @@ class useItemApi{
         const response= await apiClient.post('/items/create',data);
         return response;
       } catch (error) {
-        throw new Error(error);
+
+        return error
+        // throw new Error(error.response.data.message);
       }
    }
 
@@ -23,7 +25,7 @@ class useItemApi{
         const response= await apiClient.delete(`/items/${id}`);
         return response;
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.response.data.message);
     }
    }
    async  getUpdateItem(id){
@@ -31,7 +33,7 @@ class useItemApi{
          const response= await apiClient.get(`/items/${id}`);
          return response
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.response.data.message);
     }
    }
 }
